@@ -1,0 +1,3 @@
+#+title: PF2 SRD web scraper
+
+Web scraper for pf2srd.com that puts all monsters into a database to that to be queried by an web app that builds randomized PF2 encounters. 
