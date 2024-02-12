@@ -1,3 +1,53 @@
 #+title: PF2 SRD web scraper
+* Introduction
+Web scraper for [[https://pf2.d20pfsrd.com/][pf2srd.com]] that puts all monsters into a database to be queried by a web app that builds randomized PF2 encounters. It is designed to work with [[https://github.com/Naokotani/encounter-builder][this]] repository, which is a Svelte/Rust application
 
-Web scraper for [[https://pf2.d20pfsrd.com/][pf2srd.com]] that puts all monsters into a database to be queried by a web app that builds randomized PF2 encounters. 
+* Building
+To build this project, create a .env file that has access to a PostgreSQL database in this format:
+
+#+begin_src bash
+DATABASE_URL=postgres://username:password@localhost/database
+#+end_src
+
+For information on how to run a PostgreSQL database see the documentation [[https://www.postgresql.org/docs/][here]].
+
+Once the database is correctly configured run =cargo build --release=.
+
+* Usage
+Before you can actually run the process you will need to manually create the tables like so:
+
+|--------------+------------------------+----------|
+| Column       | Type                   | Nullable |
+|--------------+------------------------+----------|
+| creature_id  | integer                | not null |
+| url          | character varying(100) |          |
+| name         | character varying(100) |          |
+| level        | integer                |          |
+| alignment    | character varying(15)  |          |
+| monster_type | character varying(100) |          |
+| size         | character varying(15)  |          |
+| is_caster    | boolean                |          |
+| is_ranged    | boolean                |          |
+| aquatic      | boolean                |          |
+|--------------+------------------------+----------|
+
+and a traits table like so:
+
+|-------------+-----------------------|
+| Column      | Type                  |
+|-------------+-----------------------|
+| creature_id | integer               |
+| trait       | character varying(50) |
+|-------------+-----------------------|
+
+#+begin_src
+Foreign-key constraints:
+    "traits_creature_id_fkey" FOREIGN KEY (creature_id) REFERENCES monsters(creature_id)
+#+end_src
+
+Once the database is correctly configured just run the binary =./web_scaraper=.
+
+* Testing
+Unit testing is possible by running =cargo test= these tests are designed to ensure that data is correctly sanitized for the database.
+* Note
+The encounter builder web application does not currently use the traits table, but I wanted to store them in case I wanted access to them.

@@ -50,25 +50,38 @@ impl Monster {
         //  is_ranged    | boolean                |           |          |
         //  aquatic      | boolean                |           |          |
 
-        if self.name.len() > 100 || self.name.is_empty() {
-            return false;
+        match &self.name {
+            n if n.len() > 100 => return false,
+            n if n.is_empty() => return false,
+            _ => (),
         }
-        if self.level > 25 {
-            return false;
+
+        match self.level {
+            l if l > 25 => return false,
+            _ => ()
         }
-        if self.alignment.len() > 10 || self.name.is_empty() {
-            return false;
+
+        match &self.alignment {
+            a if a.len() > 2 => return false,
+            _ => ()
         }
-        if self.monster_type.len() > 100 || self.monster_type.is_empty() {
-            return false;
+
+        match &self.monster_type {
+            m if m.len() > 100 => return false,
+            m if m.is_empty() => return false,
+            _ => ()
         }
-        if self.size.len() > 20 || self.size.is_empty() {
-            return false;
+
+        match &self.size {
+            s if s.len() > 20 => return false,
+            _ => ()
         }
 
         for t in &self.traits {
-            if t.len() > 50 || t.is_empty() {
-                return false;
+            match t {
+                t if t.len() > 50 => return false,
+                t if t.is_empty() => return false,
+                _ => ()
             }
         }
         true
@@ -380,7 +393,7 @@ aaaaaaaaaaaa
 
         assert![!monster.validate()];
 
-        //Test level over 20
+        //Test level over 26
         let traits = vec![
             String::from("Fast"),
             String::from("Slow"),
@@ -389,7 +402,7 @@ aaaaaaaaaaaa
         let monster = Monster {
             url: String::from("www.foo.com"),
             name: String::from("ghost"),
-            level: 21,
+            level: 26,
             alignment: String::from("CE"),
             monster_type: String::from("Undead"),
             size: String::from("Tiny"),
@@ -398,8 +411,8 @@ aaaaaaaaaaaa
             is_ranged: false,
             is_aquatic: false,
         };
-
         assert![!monster.validate()];
+
         //Test long alignment over 2
         let alignment = String::from("123");
         let traits = vec![
